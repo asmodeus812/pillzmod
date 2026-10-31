@@ -9,11 +9,15 @@ Derived from this repo's `pcb-pro` board ([dcpedit/pillzmod](https://github.com/
 that board, so the key-well flex cables and the Pillz thumb ribbons reach them
 unchanged.
 
-![3D render](render_3d_iso.png)
+The component side (B) faces down into the case, the bare F side faces the
+keys, as with the original board (its status LEDs were the only F-side parts).
+The renders look at the component side, i.e. from underneath, so the right
+half is on the left of the picture and the Molex connectors sit on the outer
+edges, next to the key wells.
 
-Component side (B), left and right half:
+![3D render, from underneath](render_3d_iso.png)
 
-![3D render, component side](render_3d.png)
+![3D render, component side from underneath](render_3d.png)
 
 The Molex connectors, the nice!nano (on 8.5 mm sockets) and the slide switch
 use approximate box models from `models.py`; the rest are stock KiCad models.
@@ -31,7 +35,8 @@ use approximate box models from `models.py`; the rest are stock KiCad models.
 | Mounting | one M3 hole between J2 and J4 | one M3 hole between J1 and J3 |
 
 Boards are 32.5 x 86 mm, with the same top/bottom/outer edges as the original
-board. All parts go on the B side (silkscreen side), as on the upstream board.
+board. All parts go on the B side (silkscreen side, facing down in the case),
+as on the upstream board. `placement.png` and `routed.png` are seen from above.
 The nice!nano is mounted components up (facing away from the PCB).
 
 **Check the battery polarity before plugging it in.** JST-PH cells don't follow

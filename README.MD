@@ -26,6 +26,8 @@ This project replaces my two previous forks ([kinesismod](https://github.com/dcp
 
 <img src="pcb-split/render_3d_iso.png" width="600">
 
+_Seen from underneath (component side): right half on the left._
+
 Two narrow boards in [`pcb-split/`](pcb-split/README.md), one per half, for
 cutting the case in the middle. Each half has its own Nice!Nano, battery
 socket, power switch and reset button, and connects to the same Molex and
