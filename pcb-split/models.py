@@ -1,6 +1,6 @@
 """
 Write simple box VRML models for parts without a stock KiCad 3D model:
-the Molex connectors, the nice!nano on its sockets and the MSK12C02 switch.
+the Molex connectors and the nice!nano on its sockets.
 
 They are approximations (outline and height only) for renders and clearance
 checks, not mechanical CAD.
@@ -69,11 +69,6 @@ def main():
         box(-8.89, 8.89, -16.5, 16.5, 8.5, 9.7, NAVY),
         box(-4.47, 4.47, -17.0, -9.7, 9.7, 12.9, METAL),
         box(-3.5, 3.5, -2.0, 5.0, 9.7, 10.6, BLACK),
-    ])
-    # MSK12C02 slide switch, actuator at +y
-    write("SW_SPDT_MSK12C02", [
-        box(-3.35, 3.35, -1.4, 1.4, 0, 1.5, METAL),
-        box(0.15, 1.45, 1.4, 2.85, 0.3, 1.2, BLACK),
     ])
     print("wrote models to", OUT)
 

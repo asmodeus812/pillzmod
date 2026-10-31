@@ -93,6 +93,11 @@ HALVES = {
         "jst": (181.0, 113.8),
         "holes": [(195.5, 86.5)],
         "label": (178.88, 120.0),
+        # J1 pin 1 (ROW_13) sits in the top corner and Freerouting fails to
+        # reach it; run it down the free outer side of J1 to pin 11 (ROW_13)
+        "preroutes": [
+            ("ROW_13", "F.Cu", [(192.9, 55.0), (194.4, 56.5), (194.4, 66.0), (192.9, 67.5)]),
+        ],
     },
 }
 
@@ -236,6 +241,33 @@ def edge_keepout(board, x0, x1, w=0.6):
         board.Add(z)
 
 
+def add_preroutes(board, cfg):
+    """Locked tracks the autorouter keeps; route.py re-adds any it drops."""
+    for netname, layer, pts in cfg.get("preroutes", []):
+        net = board.FindNet(netname)
+        for (x0, y0), (x1, y1) in zip(pts, pts[1:]):
+            if has_track(board, netname, x0, y0, x1, y1):
+                continue
+            t = pcbnew.PCB_TRACK(board)
+            t.SetStart(pcbnew.VECTOR2I(mm(x0), mm(y0)))
+            t.SetEnd(pcbnew.VECTOR2I(mm(x1), mm(y1)))
+            t.SetWidth(mm(0.25))
+            t.SetLayer(board.GetLayerID(layer))
+            t.SetNet(net)
+            t.SetLocked(True)
+            board.Add(t)
+
+
+def has_track(board, netname, x0, y0, x1, y1):
+    ends = {(mm(x0), mm(y0)), (mm(x1), mm(y1))}
+    for t in board.GetTracks():
+        if t.GetNetname() == netname and t.GetClass() == "PCB_TRACK":
+            a, b = t.GetStart(), t.GetEnd()
+            if {(a.x, a.y), (b.x, b.y)} == ends:
+                return True
+    return False
+
+
 def design_rules(board):
     ds = board.GetDesignSettings()
     # JLCPCB standard 2-layer capabilities, with margin
@@ -311,9 +343,9 @@ def build(side, cfg):
 
     # power switch: common (2) -> B+, 1 -> battery +, 3 unused
     x, y, rot = cfg["switch"]
-    pw = place(board, load(f"{KLIB}/Button_Switch_SMD.pretty", "SW_SPDT_Shouhan_MSK12C02"),
+    # C&K PCM12SMTR: stocked by EU distributors (the MSK12C02 isn't)
+    pw = place(board, load(f"{KLIB}/Button_Switch_SMD.pretty", "SW_SPDT_PCM12"),
                "SW2", x, y, rot)
-    set_model(pw, f"{MODELS}/SW_SPDT_MSK12C02.wrl")
     for pd in pw.Pads():
         if pd.GetNumber() == "2":
             pd.SetNet(net("B+"))
@@ -332,6 +364,7 @@ def build(side, cfg):
 
     outline(board, *cfg["outline"])
     edge_keepout(board, *cfg["outline"])
+    add_preroutes(board, cfg)
 
     lx, ly = cfg["label"]
     text(board, f"PILLZ SPLIT {side.upper()}", lx, ly, 1.2)

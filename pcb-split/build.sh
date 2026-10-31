@@ -25,12 +25,26 @@ for side in left right; do
     pcb=$dir/pillz_split_$side.kicad_pcb
     out=$HERE/production/$side
 
-    kicad python3 "$HERE/route.py" dsn "$pcb" "$dir/$side.dsn"
-    fr -de "$dir/$side.dsn" -do "$dir/$side.ses" -mp "$PASSES"
-    kicad python3 "$HERE/route.py" finish "$pcb" "$dir/$side.ses"
-
-    kicad kicad-cli pcb drc --severity-error --exit-code-violations \
-        -o "$dir/drc.rpt" "$pcb"
+    # Freerouting isn't deterministic and sometimes leaves a net unrouted, so
+    # re-route from the unrouted board until DRC is clean
+    cp "$pcb" "$dir/unrouted.tmp"
+    tries=1
+    until
+        cp "$dir/unrouted.tmp" "$pcb"
+        kicad python3 "$HERE/route.py" dsn "$pcb" "$dir/$side.dsn"
+        fr -de "$dir/$side.dsn" -do "$dir/$side.ses" -mp "$PASSES"
+        kicad python3 "$HERE/route.py" finish "$pcb" "$dir/$side.ses"
+        kicad kicad-cli pcb drc --severity-error --exit-code-violations \
+            -o "$dir/drc.rpt" "$pcb"
+    do
+        if [ "$tries" -ge "${TRIES:-5}" ]; then
+            echo "$side: still failing DRC after $tries routing attempts, see $dir/drc.rpt" >&2
+            exit 1
+        fi
+        tries=$((tries + 1))
+        echo "$side: DRC failed, re-routing (attempt $tries)" >&2
+    done
+    rm -f "$dir/unrouted.tmp"
 
     rm -rf "$out" "$HERE/production/pillz_split_$side.zip"
     mkdir -p "$out"

@@ -19,18 +19,18 @@ edges, next to the key wells.
 
 ![3D render, component side from underneath](render_3d.png)
 
-The Molex connectors, the nice!nano (on 8.5 mm sockets) and the slide switch
-use approximate box models from `models.py`; the rest are stock KiCad models.
+The Molex connectors and the nice!nano (on 8.5 mm sockets) use approximate
+box models from `models.py`; the rest are stock KiCad models.
 
 ## Layout
 
 | | Left (x 100–132.5) | Right (x 167.5–200) |
 |---|---|---|
 | Function row | J2, Molex 39-53-2135 | J1, Molex 39-53-2135 |
-| Key well | J4, 39-53-2135 (2134 dual footprint) | J3, same |
+| Key well | J4, 39-53-2134 right angle (dual footprint, 2135 also fits) | J3, same |
 | Thumb (Pillz thumb PCB ribbon) | J6, 1x10 2.54 mm | J5, 1x10 2.54 mm |
 | Controller | U1 nice!nano, top level with the middle of J2, USB towards the top edge | U1, same against J1 |
-| Reset / power | SW1 SKQG / SW2 MSK12C02 (slider facing down, inner edge kept clear) | same |
+| Reset / power | SW1 SKQG / SW2 C&K PCM12SMTR (slider facing down, inner edge kept clear) | same |
 | Battery | J7 JST-PH 2.0 vertical, pin 1 = + | same |
 | Mounting | one M3 hole between J2 and J4 | one M3 hole between J1 and J3 |
 
@@ -88,6 +88,11 @@ connection, then exports Gerbers + drill files and zips them. Freerouting
 `gen.py` puts a 0.6 mm track/via keepout inside the outline because
 Freerouting doesn't receive KiCad's copper-to-edge rule.
 
+Freerouting isn't deterministic and occasionally leaves one net unrouted, so
+`build.sh` re-routes a half (up to `TRIES=5`) until DRC is clean. The right
+half has one locked pre-route (ROW_13, J1 pin 1 to pin 11 along the outer side
+of J1) that the router could never find on its own.
+
 ## Regenerating placement only
 
 KiCad 10 Python (the flatpak works):
@@ -101,3 +106,5 @@ python3 models.py       # only when changing the approximate 3D models
 
 `gen.py` stops with an error if a connector pad doesn't land exactly where it
 was on the upstream board.
+
+Parts and replacement cables with EU vendor links: [parts-links.md](parts-links.md).
