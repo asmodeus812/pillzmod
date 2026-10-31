@@ -1,0 +1,4 @@
+(fp_lib_table
+  (version 7)
+  (lib (name "pillz_split")(type "KiCad")(uri "${KIPRJMOD}/../lib/pillz_split.pretty")(options "")(descr "Pillz split footprints"))
+)

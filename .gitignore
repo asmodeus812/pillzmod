@@ -32,3 +32,10 @@ fp-info-cache
 .*.sw?
 .DS_Store
 *muse.ai
+
+# freerouting round-trip intermediates
+*.dsn
+*.ses
+pcb-split/*/drc.rpt
+pcb-split/*/*.kicad_pro
+__pycache__/

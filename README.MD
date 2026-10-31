@@ -22,6 +22,16 @@ This project replaces my two previous forks ([kinesismod](https://github.com/dcp
 * Piezo audio buzzer
 * Header for extra data pin (Elite-C only)
 
+## Split PCB (physically split Advantage 2)
+
+<img src="pcb-split/render_3d_iso.png" width="600">
+
+Two narrow boards in [`pcb-split/`](pcb-split/README.md), one per half, for
+cutting the case in the middle. Each half has its own Nice!Nano, battery
+socket, power switch and reset button, and connects to the same Molex and
+Pillz thumb connectors at their original positions. Gerbers are in
+`pcb-split/production`.
+
 ## Attribution
 
 Credit goes to the following people for doing all the initial development on replacment PCBs for the Kinesis:
@@ -32,7 +42,7 @@ Credit goes to the following people for doing all the initial development on rep
 ## Ordering PCBs from JLCPCB
 
 The files needed for https://jlcpcb.com are located in the production folders:
-* Choose `pcb-pro/production` or `pcb/production` 
+* Choose `pcb-pro/production`, `pcb/production` or `pcb-split/production/left` + `right`
 * `thumb-pcb/production`
 
 Once uploaded, you place the order with the selected default options.  You can optionally change the solder mask color, which changes the final color of your PCB.
